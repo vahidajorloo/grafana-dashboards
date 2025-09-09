@@ -1,0 +1,26 @@
+wget wget https://github.com/prometheus/node_exporter/releases/download/v1.9.1/node_exporter-1.9.1.linux-amd64.tar.gz
+
+tar -xvf node_exporter-1.9.1.linux-amd64.tar.gz
+
+sudo mv node_exporter-1.9.1.linux-amd64/node_exporter /usr/local/bin/
+
+sudo nano /etc/systemd/system/node_exporter.service
+
+[Unit]
+Description=Node Exporter
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=500
+StartLimitBurst=5
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=5s
+ExecStart=/usr/local/bin/node_exporter \
+    --collector.logind
+[Install]
+WantedBy=multi-user.target
+
+
+systemctl enable node_exporter
+systemctl start node_exporter
